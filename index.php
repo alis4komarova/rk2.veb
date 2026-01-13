@@ -1,12 +1,11 @@
+<?php include 'header.php'; ?>
 <?php
-require_once 'config.php';
 $result = mysqli_query($conn, "SELECT * FROM products");
 $products = [];
 while ($row = mysqli_fetch_assoc($result)) {
     $products[] = $row;
 }
 ?>
-<?php include 'header.php'; ?>
 
 <section class="hero">
     <h2>Добро пожаловать в Ice Dream!</h2>
@@ -50,10 +49,14 @@ while ($row = mysqli_fetch_assoc($result)) {
         </button>
         
         <div class="carousel-dots">
-            <?php for($i = 0; $i < ceil(count($products)-1 / 3); $i++): ?>
+        <?php 
+        $totalSlides = count($products)-1;
+        $slidesPerView = 3;
+        $dotsCount = ceil($totalSlides / $slidesPerView);
+        
+        for($i = 0; $i < $dotsCount; $i++): ?>
             <button class="dot <?php echo $i == 0 ? 'active' : ''; ?>" data-index="<?php echo $i; ?>"></button>
-            <?php endfor; ?>
-        </div>
+        <?php endfor; ?>
     </div>
 </section>
 

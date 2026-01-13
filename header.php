@@ -31,6 +31,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <?php if(isLoggedIn()): ?>
                     <li><a href="profile.php">
                         <i class="fas fa-user"></i> <?php safeEcho($_SESSION['username']); ?></a></li>
+                        <li><a href="feedback.php" class="<?php echo $current_page == 'feedback.php' ? 'active' : ''; ?>">
+                        <i class="fas fa-comment"></i> Обратная связь</a></li> 
                     <li><a href="logout.php">
                         <i class="fas fa-sign-out-alt"></i> Выйти</a></li>
                 <?php else: ?>
@@ -48,4 +50,3 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <div class="loader">
     <div class="loader-spinner"></div>
 </div>
-<main>

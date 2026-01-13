@@ -50,15 +50,68 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function addToCart(productId, productName) {
-    alert(productName + ' добавлено в список!');
+    const formData = new FormData();
+    formData.append('action', 'add');
+    formData.append('product_id', productId);
+
+    fetch('add_to_list.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ошибка при отправке запроса');
+    });
 }
 
 function removeFromCart(itemId) {
-    const item = document.querySelector(`[data-item-id="${itemId}"]`);
-    if (item) {
-        item.closest('.shopping-list-item').remove();
-        alert('Товар удален');
-    }
+    if (!confirm('Удалить товар из списка?')) return;
+    
+    const formData = new FormData();
+    formData.append('action', 'remove');
+    formData.append('item_id', itemId);
+
+    fetch('add_to_list.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Ответ при удалении:', data);
+        if (data.success) {
+            alert('✅ ' + data.message);
+            // Находим и удаляем элемент из DOM
+            const itemElement = document.querySelector(`[data-item-id="${itemId}"]`);
+            if (itemElement) {
+                const listItem = itemElement.closest('.shopping-list-item');
+                if (listItem) {
+                    listItem.remove();
+                }
+            }
+            // Если список стал пустым, показываем сообщение
+            const listContainer = document.getElementById('list-container');
+            if (listContainer && listContainer.children.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-cart" style="text-align: center; padding: 20px; background: #fff; border-radius: 15px;">
+                        <p>Ваш список пока пуст. Добавьте что-нибудь вкусное!</p>
+                    </div>
+                `;
+            }
+        } else {
+            alert('❌ ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        alert('Ошибка при удалении товара');
+    });
 }
 
 function initCarousel() {
